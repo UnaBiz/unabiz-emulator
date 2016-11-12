@@ -1,7 +1,7 @@
 ## UnaBiz Emulator
 
-- Node.js program that emulates a SIGFOX base station by receiving messages from TD1208 modules nearby and pushes the 
-messages to UnaCloud.
+- Node.js program that emulates a SIGFOX base station by receiving messages from TD1208 modules in emulation mode nearby and pushes the 
+                     messages to UnaCloud.
 
 - Designed to work with the SIGFOX developer kits distributed by UnaBiz
 
