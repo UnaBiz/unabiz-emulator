@@ -1,0 +1,14 @@
+{
+  "name": "unabiz-emulator",
+  "version": "1.0.0",
+  "description": "Node.js program that emulates a SIGFOX base station by receiving messages from TD1208 modules nearby and pushes the messages to UnaCloud",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Lee Lup Yuen",
+  "license": "ISC",
+  "dependencies": {
+    "serialport": "^4.0.6"
+  }
+}
