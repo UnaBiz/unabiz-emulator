@@ -307,7 +307,14 @@
       <option name="project" value="LOCAL" />
       <updated>1478917197625</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Added post to UnaCloud">
+      <created>1478919628406</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1478919628406</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -378,7 +385,8 @@
     <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="First version" />
     <MESSAGE value="Added config" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added config" />
+    <MESSAGE value="Added post to UnaCloud" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added post to UnaCloud" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
