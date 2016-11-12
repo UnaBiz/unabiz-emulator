@@ -5,6 +5,4 @@ database.sqlite
 node_modules
 ncp-debug.log
 npm-debug.log
-.env
-privkey1.pem
-google-credentials.json
+config.json

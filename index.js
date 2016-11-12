@@ -1,6 +1,7 @@
 //  Main program.
 
-const SerialPort = require("serialport");
+const SerialPort = require('serialport');
+const config = require('./config.json');
 
 console.log('Starting UnaBiz Emulator...');
 const port = new SerialPort("/dev/ttyUSB0", {
@@ -22,7 +23,7 @@ process.on('uncaughtException', (err) => {
 });
 
 port.on('open', function() {
-  //  Enable TD LAN RF asynchronous receive mode
+  //  Enable TD LAN RF asynchronous receive mode.
   port.write('AT$RL=2\r', function(err) {
     if (err) {
       return console.log('Error on write: ', err.message);
@@ -37,5 +38,7 @@ port.on('error', function(err) {
 });
 
 port.on('data', function (data) {
+  //  Every emulation message has 17 bytes:
+  //  device ID (4 bytes) + sequence number (1 byte) + payload (max 12 bytes)
   console.log('UnaBiz Emulator Received Message: ' + data);
 });
