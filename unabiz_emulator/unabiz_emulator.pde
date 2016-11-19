@@ -2,7 +2,7 @@
 import processing.serial.*;
 
 Serial myPort;  // Create object from Serial class
-String val;     // Data received from the serial port
+String line;     // Data received from the serial port
 
 void setup() {
   // On Windows machines, this generally opens COM1.
@@ -13,8 +13,27 @@ void setup() {
 
 void draw() {
   if (myPort.available() > 0) {  // If data is available,
-    val = myPort.readStringUntil('\n');         // read it and store it in val
+    line = myPort.readStringUntil('\n');         // read it and store it in val
   } 
-  if (val != null) print(val); // print it out in the console
-  val = null;
+  if (line != null) {
+    print(line);
+    processMessage(line);  //  Send the line to UnaCloud or AWS if necessary.
+  }
+  line = null;
+}
+
+void processMessage(String line) {  
+  //  Watch for messages with payload e.g.
+  //  - Radiocrafts.sendMessage: g88pi,920e1e00b051680194597b00
+  String marker = "Radiocrafts.sendMessage:";
+  if (line == null) return;
+  int pos = line.indexOf(marker);
+  if (pos < 0) return;
+  
+  String msg = line.substring(pos + marker.length()).trim();
+  String[] msgArray = msg.split(",");
+  String device = msgArray[0];
+  String data = msgArray[1];
+  println("device=" + device);
+  println("data=" + data);
 }
