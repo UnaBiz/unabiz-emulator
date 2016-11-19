@@ -70,7 +70,7 @@ port.on('open', () => {
   //  Enable TD LAN RF asynchronous receive mode.
   port.write('AT$RL=2\r', (err) => {
     if (err) {
-      return console.log('Error on write: ', err.message);
+      return console.log('*****ERROR: Can\'t write: ', err);
     }
     console.log('UnaBiz Emulator started');
     return null;
@@ -84,16 +84,21 @@ port.on('data', (data0) => {
   //  Every emulation message has 17 bytes:
   //  +RX_LAN=0102030405060708090a0b0c0d0e0f1011
   //  device ID (4 bytes) + sequence number (1 byte) + payload (max 12 bytes)
-  let data = data0;
+  let data = data0.split('\r').join('');
   const req = {};
   const prefix = '+RX_LAN=';
-  if (data.indexOf(prefix) !== 0) return;  //  Ignore corrupted messages.
+  if (data.indexOf(prefix) !== 0) {
+    //  Ignore corrupted messages.
+    console.log(`Skipping ${data}`);
+    return;
+  }
   data = data.substr(prefix.length);
 
-  const device = data.substr(0, 8);
+  let device = data.substr(0, 8).toUpperCase();
+  while (device[0] === '0') device = device.substr(1);  //  Strip leading 0s.
   const seqNumber = data.substr(8, 2);
   data = data.substr(10);
-  console.log('UnaBiz Emulator received msg:');
+  console.log('<< UnaBiz Emulator received msg');
   console.log(util.inspect({ device, seqNumber, data }, { colors: true }));
 
   //  TODO: Check whether we missed any messages with the sequence number.
@@ -121,8 +126,8 @@ port.on('data', (data0) => {
     'Content-Length': Buffer.byteLength(body),
   };
   sendHTTPRequest(req, 'POST', `${config.postMessageURL}?type=emulator`, headers, body)
-    .then(() => console.log(`UnaBiz Emulator sent to UnaCloud ${JSON.stringify({
-      device, seqNumber }, null, 2)}`))
+    .then(() => console.log(`\n>> UnaBiz Emulator sent to UnaCloud ${JSON.stringify({
+      device, seqNumber })}\n`))
     .catch((error) => console.error(`***** ERROR: Failed to send to UnaCloud ${JSON.stringify({
       error, device, seqNumber }, null, 2)}`));
 });
