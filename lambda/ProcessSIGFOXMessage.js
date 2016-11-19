@@ -38,24 +38,17 @@ function decodeMessage(msg) {
       parseInt(val[1], 16);
 
     //  Decode name.
-    const name3 = '   ';
+    const name3 = [0, 0, 0];
     for (let j = 0; j < 3; j++) {
       const code = name2 & 31;
       const ch = decodeLetter(code);
       if (ch > 0) name3[2 - j] = ch;
       name2 = name2 >> 5;
     }
-    result[name] = val2 / 10.0;
+    const name4 = String.fromCharCode(name3[0], name3[1], name3[2]);
+    result[name4] = val2 / 10.0;
   }
   return result;
-}
-
-function hexDigitToDecimal(ch) {
-  //  Convert 0..9, a..f, A..F to decimal.
-  if (ch >= 1 * '0' && ch <= 1 * '9') return ch - '0'[0];
-  if (ch >= 1 * 'a' && ch <= 1 * 'z') return ch - 'a'[0] + 10;
-  if (ch >= 1 * 'A' && ch <= 1 * 'Z') return ch - 'A'[0] + 10;
-  return 0;
 }
 
 const firstLetter = 1;
@@ -64,8 +57,8 @@ const firstDigit = 27;
 function decodeLetter(code) {
   //  Convert the 5-bit code to a letter.
   if (code === 0) return 0;
-  if (code >= firstLetter && code < firstDigit) return code - firstLetter + 1 * 'a'[0];
-  if (code >= firstDigit) return code - firstDigit + 1 * '0'[0];
+  if (code >= firstLetter && code < firstDigit) return code - firstLetter + 'a'.charCodeAt(0);
+  if (code >= firstDigit) return code - firstDigit + '0'.charCodeAt(0);
   return 0;
 }
 
