@@ -23,17 +23,37 @@ void draw() {
 }
 
 void processMessage(String line) {  
-  //  Watch for messages with payload e.g.
-  //  - Radiocrafts.sendMessage: g88pi,920e1e00b051680194597b00
-  String marker = "Radiocrafts.sendMessage:";
+  //  Watch for messages with markers and process them.
+  String[] markers = {
+    "Radiocrafts.sendMessage:",  //  - Radiocrafts.sendMessage: g88pi,920e1e00b051680194597b00
+    "STOPSTOPSTOP:"  //  STOPSTOPSTOP: End
+  };
   if (line == null) return;
-  int pos = line.indexOf(marker);
-  if (pos < 0) return;
+  String msg = null;  String[] msgArray = null;  int i = 0;
+  //  Hunt for each marker.
+  for (String marker: markers) {
+    int pos = line.indexOf(marker);
+    if (pos < 0) { i++; continue; }
+    
+    msg = line.substring(pos + marker.length()).trim();
+    msgArray = msg.split(",");
+    break;
+  }
+  if (msg == null) return;
   
-  String msg = line.substring(pos + marker.length()).trim();
-  String[] msgArray = msg.split(",");
-  String device = msgArray[0];
-  String data = msgArray[1];
-  println("device=" + device);
-  println("data=" + data);
+  switch(i) {
+    case 0: {  //  sendMessage
+      String device = msgArray[0];
+      String data = msgArray[1];
+      println("device=" + device);
+      println("data=" + data);
+      break;
+    }
+    case 1: {  //  stop
+      println("stop=" + msg);      
+      exit();
+      break;
+    }
+    default: break;
+  }
 }
