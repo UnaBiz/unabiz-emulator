@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c96c0b1d-477a-44ad-acd3-d71a8a3b3602" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.eslintrc" afterPath="$PROJECT_DIR$/.eslintrc" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lambda/ProcessSIGFOXMessage.js" afterPath="$PROJECT_DIR$/lambda/ProcessSIGFOXMessage.js" />
     </list>
@@ -100,9 +99,11 @@
       <file leaf-file-name="ProcessSIGFOXMessage.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lambda/ProcessSIGFOXMessage.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="280">
-              <caret line="52" column="0" lean-forward="false" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="97">
+              <caret line="60" column="46" lean-forward="true" selection-start-line="60" selection-start-column="46" selection-end-line="60" selection-end-column="46" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -121,7 +122,7 @@
         <entry file="file://$PROJECT_DIR$/config.json">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="120">
-              <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+              <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -448,7 +449,7 @@
       <updated>1478911813459</updated>
       <workItem from="1478911818117" duration="2099000" />
       <workItem from="1478914073750" duration="2862000" />
-      <workItem from="1479596704912" duration="6636000" />
+      <workItem from="1479596704912" duration="8549000" />
     </task>
     <task id="LOCAL-00001" summary="First version">
       <created>1478913992666</created>
@@ -478,15 +479,22 @@
       <option name="project" value="LOCAL" />
       <updated>1479614524057</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Tested AWS IoT OK">
+      <created>1479617722695</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1479617722695</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="11597000" />
+    <option name="totallyTimeSpent" value="13510000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="13" y="22" width="1184" height="958" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2550415" sideWeight="0.54264057" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Code Outline" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329294" sideWeight="0.49653122" order="4" side_tool="false" content_ui="tabs" />
@@ -551,7 +559,8 @@
     <MESSAGE value="First version" />
     <MESSAGE value="Minor fixes" />
     <MESSAGE value="Testing AWS IoT integration" />
-    <option name="LAST_COMMIT_MESSAGE" value="Testing AWS IoT integration" />
+    <MESSAGE value="Tested AWS IoT OK" />
+    <option name="LAST_COMMIT_MESSAGE" value="Tested AWS IoT OK" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -691,7 +700,7 @@
     <entry file="file://$PROJECT_DIR$/config.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
-          <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -706,9 +715,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lambda/ProcessSIGFOXMessage.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="52" column="0" lean-forward="false" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="97">
+          <caret line="60" column="46" lean-forward="true" selection-start-line="60" selection-start-column="46" selection-end-line="60" selection-end-column="46" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

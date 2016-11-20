@@ -1,4 +1,6 @@
-//  AWS Lambda function to process the SIGFOX message passed by UnaBiz Emulator or UnaCloud.
+//  AWS Lambda function to process the SIGFOX message passed by UnaBiz Emulator or UnaCloud,
+//  by calling AWS API UpdateThingShadow to update the device state.
+//  Node.js 4.3 / index.handler / lambda_iot / 512 MB / 1 min / No VPC
 //  This lambda function must be run as role lambda_iot.
 //  lambda_iot must be attached to policy LambdaExecuteIoTUpdate, defined as:
 // {
@@ -58,15 +60,20 @@ const endpoint = 'A1P01IYM2DOZA0.iot.us-west-2.amazonaws.com';
 //  Open the AWS IoT connection with the endpoint.
 const iotdata = new AWS.IotData({ endpoint });
 
-exports.handler = (input, context2, callback2) => { /* eslint-disable no-param-reassign */
+exports.handler = (input, context2, callback2) => {
+  /* eslint-disable no-param-reassign, no-restricted-syntax, guard-for-in */
   //  This is the main program flow.
+  //  Input must contain "device" (thing name e.g. g88pi) and "data", the encoded fields.
   if (input.domain) delete input.domain;  //  TODO: Contains self-reference loop.
   console.log('ProcessSIGFOXMessage Input:', JSON.stringify(input, null, 2));
   console.log('ProcessSIGFOXMessage Context:', context2);
 
   //  Decode the message.
   const decoded_data = decodeMessage(input.data);
-
+  for (const key in input) {
+    //  Copy the original input fields into the decoded fields.
+    decoded_data[key] = input[key];
+  }
   //  Update the device/thing state.
   return updateDeviceState(input.device, decoded_data)
     .then(result => callback2(null, { result, decoded_data }))
@@ -147,8 +154,8 @@ function isProduction() {
 /* eslint-disable no-unused-vars, quotes, quote-props, max-len, comma-dangle, no-console */
 
 const test_input = {
-  device: 'g88pi',
-  data: '920e5a00b051680194597b00'
+  "device": "g88pi",
+  "data": "920e5a00b051680194597b00"
 };
 
 const test_context = {
