@@ -16,13 +16,13 @@ static String[] emulateServerURLs = {  //  URLs for the SIGFOX emulation servers
   "http://chendol.tp-iot.com/prod/ProcessSIGFOXMessage"  //  nginx proxy to API Gateway.
 };
 
-Serial arduinoPort;  // Serial port connected to Arduino debug output.
-String line;     // Data received from the serial port
+static Serial arduinoPort;  // Serial port connected to Arduino debug output.
+static String line;     // Data received from the serial port
 
 void setup() {  //  Will be called only once.
   //  Open the serial port that connects to the Arduino device.
   String[] serialPorts = Serial.list();
-  println("Found COM / serial ports: " + join(serialPorts, ", "));
+  println(prefix + "Found COM / serial ports: " + join(serialPorts, ", "));
   if (serialPortIndex >= serialPorts.length) {
     if (serialPorts.length == 0)
       println("****Error: No COM / serial ports found. Check your Arduino USB connection");
@@ -33,7 +33,7 @@ void setup() {  //  Will be called only once.
     exit();
   }
   String portName = Serial.list()[serialPortIndex];
-  println("Connecting to Arduino at port " + portName + "...");
+  println(prefix + "Connecting to Arduino at port " + portName + "...");
   arduinoPort = new Serial(this, portName, 9600);  
   //  Upon connection, the Arduino will automatically restart the sketch.
 }
@@ -54,14 +54,14 @@ void draw() {  //  Will be called when screen needs to be refreshed.
 void sendEmulatedMessage(String device, String data) {
   //  Send a message to UnaCloud or AWS to emulate a device message.
   String json = "{\"device\": \"" + device + "\", \"data\": \"" + data + "\"}";
-  println("Emulating SIGFOX message:" + json + "...");
+  println(prefix + "Emulating SIGFOX message:" + json + "...");
   for (String url: emulateServerURLs) {
     //  For each emulate server URL, send the device and data.
     JSONRequest post = new JSONRequest(url);
     post.addHeader("Content-Type", "application/json");
     post.addJson(json);
     post.send();
-    println("Emulate server reponse:" + post.getContent());
+    println(prefix + "Emulate server reponse:" + post.getContent());
   }
 }
 
@@ -88,16 +88,18 @@ void processMessage(String line) {
     case 0: {  //  sendMessage
       String device = msgArray[0];
       String data = msgArray[1];
-      println("Detected message for device=" + device + ", data=" + data);
+      println(prefix + "Detected message for device=" + device + ", data=" + data);
       //  Emulate the SIGFOX message by sending to an emulation server.
       sendEmulatedMessage(device, data);
       break;
     }
     case 1: {  //  stop
-      println("stop=" + msg);      
+      println(prefix + "Arduino stopped: " + msg);      
       exit();
       break;
     }
     default: break;
   }
 }
+
+static String prefix = " > ";
