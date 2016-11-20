@@ -3,12 +3,17 @@
 //  to emulate thw tansmission of the message to the cloud.
 //  Based on https://learn.sparkfun.com/tutorials/connecting-arduino-to-processing
 import processing.serial.*;
+import http.requests.*;
 
+//  If you have multiple serial ports, change this number to select the specific port.
+//  Valid values: 0 to (total number of ports) - 1.
 static int serialPortIndex = 0;
 
-static String[] emulateServerURLs = {
-  // "https://l0043j2svc.execute-api.us-west-2.amazonaws.com/prod/ProcessSIGFOXMessage"
-  "http://d2zbvcvzmw2eio.cloudfront.net/prod/ProcessSIGFOXMessage"
+static String[] emulateServerURLs = {  //  URLs for the SIGFOX emulation servers.
+  //  Can't use https because need to install SSL cert locally. So we use nginx to run
+  //  a http proxy to https.  See nginx.conf.
+  //  "https://l0043j2svc.execute-api.us-west-2.amazonaws.com/prod/ProcessSIGFOXMessage"
+  "http://chendol.tp-iot.com/prod/ProcessSIGFOXMessage"  //  nginx proxy to API Gateway.
 };
 
 Serial arduinoPort;  // Serial port connected to Arduino debug output.
@@ -17,6 +22,7 @@ String line;     // Data received from the serial port
 void setup() {  //  Will be called only once.
   //  Open the serial port that connects to the Arduino device.
   String[] serialPorts = Serial.list();
+  println("Found COM / serial ports: " + join(serialPorts, ", "));
   if (serialPortIndex >= serialPorts.length) {
     if (serialPorts.length == 0)
       println("****Error: No COM / serial ports found. Check your Arduino USB connection");
@@ -51,7 +57,7 @@ void sendEmulatedMessage(String device, String data) {
   println("Emulating SIGFOX message:" + json + "...");
   for (String url: emulateServerURLs) {
     //  For each emulate server URL, send the device and data.
-    PostRequest post = new PostRequest(url);
+    JSONRequest post = new JSONRequest(url);
     post.addHeader("Content-Type", "application/json");
     post.addJson(json);
     post.send();

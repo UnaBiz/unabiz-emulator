@@ -26,9 +26,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import MySSLSocketFactory;
 
-public class PostRequest {
+public class JSONRequest {
   String url;
   ArrayList<BasicNameValuePair> nameValuePairs;
   HashMap<String, File> nameFilePairs;
@@ -39,68 +38,11 @@ public class PostRequest {
   HttpResponse response;
   String json;
  
- /*
-  public void init() {
-    SSLContext ctx = SSLContext.getInstance("TLS");
-    X509TrustManager tm = new X509TrustManager() {
-      
-        @Override
-        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-            return null;
-        }
-
-        @Override
-        public void checkClientTrusted(
-                java.security.cert.X509Certificate[] certs, String authType) {
-        }
-        
-        @Override
-        public void checkServerTrusted(
-                java.security.cert.X509Certificate[] certs, String authType) {
-        }
-    };
-    ctx.init(null, new TrustManager[]{tm}, null);
-    SSLSocketFactory ssf = new SSLSocketFactory(ctx,SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-    ClientConnectionManager ccm = base.getConnectionManager();
-    SchemeRegistry sr = ccm.getSchemeRegistry();
-    sr.register(new Scheme("https", 443, ssf));    
-    // client = new DefaultHttpClient(ccm, base.getParams());
-  }
-  */
-
-  /*
-  public DefaultHttpClient getNewHttpClient() {
-    try {
-        //KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-        //trustStore.load(null, null);
-        //MySSLSocketFactory sf = new MySSLSocketFactory(trustStore);
-        
-        MySSLSocketFactory sf = new MySSLSocketFactory(null);
-        sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-
-        HttpParams params = new BasicHttpParams();
-        HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-        HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
-
-        SchemeRegistry registry = new SchemeRegistry();
-        registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-        registry.register(new Scheme("https", sf, 443));
-
-        ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, registry);
-
-        return new DefaultHttpClient(ccm, params);
-    } catch (Exception e) {
-        return new DefaultHttpClient();
-    }
-  }
-  */
- 
-  public PostRequest(String url) {
-    init();
+  public JSONRequest(String url) {
     this(url, "ISO-8859-1");
   }
  
-  public PostRequest(String url, String encoding) {
+  public JSONRequest(String url, String encoding) {
     this.url = url;
     this.encoding = encoding;
     nameValuePairs = new ArrayList<BasicNameValuePair>();
