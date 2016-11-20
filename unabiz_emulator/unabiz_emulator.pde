@@ -102,4 +102,48 @@ void processMessage(String line) {
   }
 }
 
+function decodeMessage(msg) { /* eslint-disable no-bitwise, operator-assignment */
+  //  Decode the packed binary SIGFOX message e.g. 920e5a00b051680194597b00
+  //  2 bytes name, 2 bytes float * 10, 2 bytes name, 2 bytes float * 10, ...
+  if (!msg) return {};
+  const result = {};
+  for (let i = 0; i < msg.length; i = i + 8) {
+    const name = msg.substring(i, i + 4);
+    const val = msg.substring(i + 4, i + 8);
+    let name2 =
+      (parseInt(name[2], 16) << 12) +
+      (parseInt(name[3], 16) << 8) +
+      (parseInt(name[0], 16) << 4) +
+      parseInt(name[1], 16);
+    const val2 =
+      (parseInt(val[2], 16) << 12) +
+      (parseInt(val[3], 16) << 8) +
+      (parseInt(val[0], 16) << 4) +
+      parseInt(val[1], 16);
+
+    //  Decode name.
+    const name3 = [0, 0, 0];
+    for (let j = 0; j < 3; j = j + 1) {
+      const code = name2 & 31;
+      const ch = decodeLetter(code);
+      if (ch > 0) name3[2 - j] = ch;
+      name2 = name2 >> 5;
+    }
+    const name4 = String.fromCharCode(name3[0], name3[1], name3[2]);
+    result[name4] = val2 / 10.0;
+  }
+  return result;
+}
+
+const firstLetter = 1;
+const firstDigit = 27;
+
+function decodeLetter(code) {
+  //  Convert the 5-bit code to a letter.
+  if (code === 0) return 0;
+  if (code >= firstLetter && code < firstDigit) return (code - firstLetter) + 'a'.charCodeAt(0);
+  if (code >= firstDigit) return (code - firstDigit) + '0'.charCodeAt(0);
+  return 0;
+}
+
 static String prefix = " > ";
