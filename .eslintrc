@@ -9,6 +9,10 @@
     "react/jsx-quotes": 0,
     "jsx-quotes": [2, "prefer-double"],
     "camelcase": 0,
-    "no-console": 0
+    "no-console": 0,
+    "strict": 0,
+    "import/newline-after-import": 0,
+    "global-require": 0,
+    "no-use-before-define": 0
   }
 }
