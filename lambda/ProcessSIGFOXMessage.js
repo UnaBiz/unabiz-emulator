@@ -9,15 +9,46 @@ const AWS = require('aws-sdk');
 AWS.config.region = 'us-west-2';
 //  AWS.config.logger = process.stdout;  //  Debug
 
+if (!process.env.LAMBDA_TASK_ROOT) {
+  //  For unit test, set the credentials.
+  const config = require('../config');
+  AWS.config.accessKeyId = config.accessKeyId;
+  AWS.config.secretAccessKey = config.secretAccessKey;
+}
+const iotdata = new AWS.IotData();
+
 exports.handler = (input, context2, callback2) => {
   //  This is the main program flow.
   if (input.domain) delete input.domain;  //  TODO: Contains self-reference loop.
   console.log('ProcessSIGFOXMessage Input:', JSON.stringify(input, null, 2));
   console.log('ProcessSIGFOXMessage Context:', context2);
 
+  //  Decode the message.
   const decoded_data = decodeMessage(input.data);
-  return callback2(null, decoded_data);
+
+  //  Update the device/thing state.
+  return updateDeviceState(input.device, decoded_data)
+    .then((res) => callback2(null, decoded_data))
+    .catch((err) => callback2(err));
 };
+
+function updateDeviceState(device, state) {
+  //  Update the device/thing state.  Returns a promise.
+  const payload = {
+    state: {
+      reported: state
+  }};
+  if (!payload.state.reported.timestamp) {
+    const localtime = new Date().getDate() + (8 * 60 * 60 * 1000);  //  Singapore time is GMT+8 hours.
+    payload.state.reported.timestamp = new Date(localtime).toISOString().replace('Z', '');
+  }
+  const params = {
+    payload: JSON.stringify(payload),
+    thingName: device,
+  };
+  console.log({updateThingShadow: params});
+  return iotdata.updateThingShadow(params).promise();
+}
 
 function decodeMessage(msg) {
   //  Decode the packed binary SIGFOX message e.g. 920e5a00b051680194597b00
