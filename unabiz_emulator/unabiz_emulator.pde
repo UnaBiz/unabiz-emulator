@@ -1,25 +1,62 @@
+//  Read the debug output from the Arduino device to watch out for SIGFOX
+//  messages sent by the device.  Send a copy of the message to UnaCloud / AWS
+//  to emulate thw tansmission of the message to the cloud.
 //  Based on https://learn.sparkfun.com/tutorials/connecting-arduino-to-processing
 import processing.serial.*;
 
-Serial myPort;  // Create object from Serial class
+static int serialPortIndex = 0;
+
+static String[] emulateServerURLs = {
+  // "https://l0043j2svc.execute-api.us-west-2.amazonaws.com/prod/ProcessSIGFOXMessage"
+  "http://d2zbvcvzmw2eio.cloudfront.net/prod/ProcessSIGFOXMessage"
+};
+
+Serial arduinoPort;  // Serial port connected to Arduino debug output.
 String line;     // Data received from the serial port
 
-void setup() {
-  // On Windows machines, this generally opens COM1.
-  // Open whatever port is the one you're using.
-  String portName = Serial.list()[0]; //change the 0 to a 1 or 2 etc. to match your port
-  myPort = new Serial(this, portName, 9600);
+void setup() {  //  Will be called only once.
+  //  Open the serial port that connects to the Arduino device.
+  String[] serialPorts = Serial.list();
+  if (serialPortIndex >= serialPorts.length) {
+    if (serialPorts.length == 0)
+      println("****Error: No COM / serial ports found. Check your Arduino USB connection");
+    else if (serialPortIndex > 0)
+      println("****Error: No COM / serial ports found at index " + str(serialPortIndex) + 
+        ". Edit unabiz_emulator.pde, change serialPortIndex to a number between 0 and " +
+        str(serialPorts.length - 1));
+    exit();
+  }
+  String portName = Serial.list()[serialPortIndex];
+  println("Connecting to Arduino at port " + portName + "...");
+  arduinoPort = new Serial(this, portName, 9600);  
+  //  Upon connection, the Arduino will automatically restart the sketch.
 }
 
-void draw() {
-  if (myPort.available() > 0) {  // If data is available,
-    line = myPort.readStringUntil('\n');         // read it and store it in val
+void draw() {  //  Will be called when screen needs to be refreshed.
+  //  Receive one line at a time from the serial port, which is connected
+  //  to the debug output of the Arduino.
+  if (arduinoPort.available() > 0) {  // If data is available,
+    line = arduinoPort.readStringUntil('\n');         // read it and store it in val
   } 
   if (line != null) {
     print(line);
     processMessage(line);  //  Send the line to UnaCloud or AWS if necessary.
   }
   line = null;
+}
+
+void sendEmulatedMessage(String device, String data) {
+  //  Send a message to UnaCloud or AWS to emulate a device message.
+  String json = "{\"device\": \"" + device + "\", \"data\": \"" + data + "\"}";
+  println("Emulating SIGFOX message:" + json + "...");
+  for (String url: emulateServerURLs) {
+    //  For each emulate server URL, send the device and data.
+    PostRequest post = new PostRequest(url);
+    post.addHeader("Content-Type", "application/json");
+    post.addJson(json);
+    post.send();
+    println("Emulate server reponse:" + post.getContent());
+  }
 }
 
 void processMessage(String line) {  
@@ -45,8 +82,9 @@ void processMessage(String line) {
     case 0: {  //  sendMessage
       String device = msgArray[0];
       String data = msgArray[1];
-      println("device=" + device);
-      println("data=" + data);
+      println("Detected message for device=" + device + ", data=" + data);
+      //  Emulate the SIGFOX message by sending to an emulation server.
+      sendEmulatedMessage(device, data);
       break;
     }
     case 1: {  //  stop
